@@ -1,0 +1,24 @@
+{
+  "name": "cgsm-uo288928",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "start": "webpack serve",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sergiobs26mt/cgsm-uo288928.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Sergiobs26mt/cgsm-uo288928/issues"
+  },
+  "homepage": "https://github.com/Sergiobs26mt/cgsm-uo288928#readme"
+}
