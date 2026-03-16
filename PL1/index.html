@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Memoria de practicas de CGSM - Practica 1</title>
+        <link rel="stylesheet" type="text/css" href="report.css">
+    </head>
+    <body>
+        <div id="head">
+            <table id="general">
+                <tr>
+                    <th class="header">Nombre:</th>
+                    <td>Sergio Botana Suárez</td>
+                </tr>
+                <tr>
+                    <th>Practica:</th>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>Fecha:</th>
+                    <td>16/03/2026</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="content">
+            <h1>Memoria</h1>
+
+            <h2>Descripcion de la practica</h2>
+            <p>
+                En esta sesion se configuro el flujo de trabajo con webpack para compilar escenas WebGL y se desarrollo de forma incremental
+                una coleccion de escenas con three.js. Se verifico soporte WebGL2, se construyeron objetos basicos (cubo, cilindro, esfera),
+                se aplicaron transformaciones y se creo una geometria personalizada con BufferGeometry.
+            </p>
+
+            <h2>Tareas realizadas y resultados</h2>
+            <p>
+                Se completaron las escenas prac1-1 a prac1-6 con sus scripts asociados en src. Se configuro webpack con entradas por escena,
+                se arranco el servidor de desarrollo y se comprobo el acceso por navegador en localhost. El resultado final incluye materiales
+                MeshBasic, MeshLambert y MeshPhong, junto con iluminacion para visualizar correctamente los materiales no basicos.
+            </p>
+
+            <h2>Ejercicio 1 (prac1-1)</h2>
+            <p>
+                Se creo una pagina minima con comprobacion de soporte WebGL2 usando WEBGL.isWebGL2Available(). Si no hay soporte,
+                se informa al usuario insertando el mensaje de error en el DOM.
+            </p>
+            <iframe class="container" src="prac1-1.html" title="Escena prac1-1"></iframe>
+
+            <h2>Ejercicio 2 (prac1-2)</h2>
+            <p>
+                Se implemento la primera escena completa: scene, renderer, camera y un cubo en el origen con material basico.
+                El resultado inicial muestra principalmente una cara por la orientacion camara-objeto.
+            </p>
+            <iframe class="container" src="prac1-2.html" title="Escena prac1-2"></iframe>
+
+            <h2>Ejercicio 3 (prac1-3)</h2>
+            <p>
+                Se roto el cubo en los ejes X e Y con angulos en radianes para apreciar la tridimensionalidad del objeto.
+            </p>
+            <iframe class="container" src="prac1-3.html" title="Escena prac1-3"></iframe>
+
+            <h2>Ejercicio 4 (prac1-4)</h2>
+            <p>
+                Se creo una escena con tres geometrías de three.js (cubo, cilindro y esfera), desplazando sus posiciones para evitar solapes.
+            </p>
+            <iframe class="container" src="prac1-4.html" title="Escena prac1-4"></iframe>
+
+            <h2>Ejercicio 5 (prac1-5)</h2>
+            <p>
+                Se anadio una geometria personalizada de casa mediante BufferGeometry, definiendo vertices e indices manualmente,
+                y se ubico a la derecha del resto de figuras para mantener una composicion clara.
+            </p>
+            <iframe class="container" src="prac1-5.html" title="Escena prac1-5"></iframe>
+
+            <h2>Ejercicio 6 (prac1-6)</h2>
+            <p>
+                Se combinaron todos los objetos y se asignaron materiales por tipo: cubo con MeshBasic, cilindro con MeshLambert,
+                esfera con MeshPhong y casa con material basico. Se incorporo iluminacion ambiental y direccional para visualizar
+                Lambert y Phong de forma correcta.
+            </p>
+            <iframe class="container" src="prac1-6.html" title="Escena prac1-6"></iframe>
+
+            <h2>Respuestas concisas a cuestiones del guion</h2>
+            <p>
+                Por que inicialmente el cubo no se aprecia en 3D: porque la camara mira casi frontalmente a una cara del cubo.
+                Como se corrige: aplicando rotacion al objeto o cambiando camara.
+            </p>
+            <p>
+                Por que son necesarias luces con Lambert/Phong: porque esos modelos calculan el color en funcion de la iluminacion;
+                sin luz, el objeto aparece negro o no visible.
+            </p>
+            <p>
+                Como se definen geometrías personalizadas: declarando el array de vertices y luego los indices de triángulos que
+                conectan esos vertices en BufferGeometry.
+            </p>
+
+            <h2>Dificultades encontradas y solucion</h2>
+            <p>
+                1) Error de ejecucion inicial de webpack (<span class="code">webpack: command not found</span>): se resolvio instalando
+                <span class="code">webpack</span>, <span class="code">webpack-cli</span> y <span class="code">webpack-dev-server</span> como dependencias de desarrollo.
+            </p>
+            <p>
+                2) Ajuste de geometria personalizada: fue necesario revisar vertices/indices para evitar caras incorrectas y recolocar la
+                casa para que fuese visible en el encuadre.
+            </p>
+            <p>
+                3) Visibilidad de materiales: se detecto que MeshLambert y MeshPhong requerian fuentes de luz; se resolvio anadiendo
+                una luz ambiental y una direccional.
+            </p>
+
+            <h2>Capturas de pantalla significativas</h2>
+            <p>
+                No se adjuntan capturas adicionales en esta entrega porque cada escena queda embebida en esta memoria mediante iframes,
+                permitiendo comprobar el resultado directamente.
+            </p>
+        </div>
+    </body>
+</html>
