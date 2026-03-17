@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Memoria de practicas de CGSM - Practica 2</title>
+        <link rel="stylesheet" type="text/css" href="report.css">
+    </head>
+    <body>
+        <div id="head">
+            <table id="general">
+                <tr>
+                    <th class="header">Nombre:</th>
+                    <td>Sergio Botana Suárez</td>
+                </tr>
+                <tr>
+                    <th>Practica:</th>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>Fecha:</th>
+                    <td>17/03/2026</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="content">
+            <h1>Memoria</h1>
+
+            <h2>Descripcion de la practica</h2>
+            <p>
+                En esta sesion se construyo de forma incremental un modelo 3D del sistema Tierra-Luna-Sol con three.js.
+                Se trabajo con texturas, iluminacion, materiales avanzados (MeshPhong, MeshLambert, ShaderMaterial),
+                animacion con THREE.Clock y requestAnimationFrame, shaders GLSL personalizados y carga de modelos
+                COLLADA externos mediante ColladaLoader. El objetivo final fue crear una escena completa y animada
+                que integrase todos los conceptos de la sesion.
+            </p>
+
+            <h2>Tareas realizadas y resultados</h2>
+            <p>
+                Se completaron las escenas prac2-1 a prac2-9 con sus scripts asociados en src/. Se configuro webpack
+                con una entrada por escena, se instalo el cargador webpack-glsl-loader para importar shaders GLSL y
+                se verifico cada escena en el servidor de desarrollo. La sesion concluyo con un sistema completo
+                Tierra-Luna-Sol animado que incluye la ISS orbitando la Tierra.
+            </p>
+
+            <h2>Ejercicio 1 (prac2-1) — Cubo texturizado</h2>
+            <p>
+                Se aplico la textura <span class="code">crate.gif</span> a un cubo usando
+                <span class="code">THREE.TextureLoader</span> y <span class="code">MeshBasicMaterial({ map })</span>.
+                La carga es asincrona; se pasa un callback a <span class="code">load()</span> para re-renderizar
+                una vez disponible la textura.
+            </p>
+            <iframe class="container" src="prac2-1.html" title="Escena prac2-1"></iframe>
+
+            <h2>Ejercicio 2 (prac2-2) — Esfera terrestre con PointLight</h2>
+            <p>
+                Se creo una esfera con material <span class="code">MeshPhongMaterial</span> (componentes ambiental,
+                difusa y especular) y textura de la superficie terrestre. Se anadio una
+                <span class="code">PointLight</span> lateral simulando el Sol, con
+                <span class="code">decay=0</span> para evitar atenuacion por distancia, y una
+                <span class="code">AmbientLight</span> tenue para la cara nocturna.
+            </p>
+            <iframe class="container" src="prac2-2.html" title="Escena prac2-2"></iframe>
+
+            <h2>Ejercicio 3 (prac2-3) — Atmosfera con nubes transparentes</h2>
+            <p>
+                Se anadio una esfera ligeramente mayor con material
+                <span class="code">MeshLambertMaterial({ transparent: true })</span> y textura de nubes.
+                Ambos objetos se agruparon en un <span class="code">THREE.Object3D</span> para compartir
+                transformaciones. Se aplico la inclinacion axial (0.36 rad = 23 grados) al grupo.
+            </p>
+            <iframe class="container" src="prac2-3.html" title="Escena prac2-3"></iframe>
+
+            <h2>Ejercicio 4 (prac2-4) — Inclinacion orbital</h2>
+            <p>
+                Copia de prac2-3 en la que se hizo explicita la rotacion sobre el eje Z de 0.36 radianes
+                para representar la inclinacion del eje terrestre respecto al plano orbital (z=0).
+                El <span class="code">Object3D</span> padre garantiza que la rotacion afecte
+                simultaneamente al globo y a la atmosfera.
+            </p>
+            <iframe class="container" src="prac2-4.html" title="Escena prac2-4"></iframe>
+
+            <h2>Ejercicio 5 (prac2-5) — La Luna</h2>
+            <p>
+                Se anadio la Luna a escala (radio = 0.27 x Tierra) con
+                <span class="code">MeshLambertMaterial</span> y textura lunar. Se posiciono en el plano XZ
+                mediante la formula <span class="code">sqrt(distance/2)</span> y se rotó
+                <span class="code">Math.PI</span> para mostrar la cara visible (bloqueo de marea).
+                Un <span class="code">moonGroup</span> inclinado 0.089 rad simula la inclinacion orbital.
+            </p>
+            <iframe class="container" src="prac2-5.html" title="Escena prac2-5"></iframe>
+
+            <h2>Ejercicio 6 (prac2-6) — Rotacion de la Tierra</h2>
+            <p>
+                Se implemento el bucle de animacion con <span class="code">THREE.Clock.getDelta()</span>
+                y <span class="code">requestAnimationFrame</span>. La Tierra completa una vuelta en 24 s
+                de simulacion; la atmosfera rota al 95 % de esa velocidad para simular el movimiento
+                independiente de las nubes.
+            </p>
+            <iframe class="container" src="prac2-6.html" title="Escena prac2-6"></iframe>
+
+            <h2>Ejercicio 7 (prac2-7) — Orbita de la Luna</h2>
+            <p>
+                Se anadio la rotacion de <span class="code">moonGroup.rotation.y</span> en cada frame.
+                La orbita lunar completa un ciclo en 28 dias de simulacion (672 s), manteniendo la
+                proporcion correcta con la rotacion terrestre.
+            </p>
+            <iframe class="container" src="prac2-7.html" title="Escena prac2-7"></iframe>
+
+            <h2>Ejercicio 8 (prac2-8) — El Sol con ShaderMaterial</h2>
+            <p>
+                Se instalo <span class="code">webpack-glsl-loader</span> para importar ficheros GLSL como
+                strings. Se crearon <span class="code">shaders/vertex.glsl</span> y
+                <span class="code">shaders/fragment.glsl</span> con un efecto de lava/plasma animado.
+                El Sol se coloco en la posicion de la <span class="code">PointLight</span> con radio
+                5 x Tierra y se anima incrementando el uniform <span class="code">time</span> cada frame.
+            </p>
+            <iframe class="container" src="prac2-8.html" title="Escena prac2-8"></iframe>
+
+            <h2>Ejercicio 9 (prac2-9) — Modelo COLLADA de la ISS</h2>
+            <p>
+                Se importo <span class="code">ColladaLoader</span> de three.js y se cargo el modelo
+                <span class="code">iss.dae</span> de forma asincrona. Se uso un
+                <span class="code">THREE.LoadingManager</span> para anadir el modelo a la escena
+                solo cuando todos los recursos han terminado de cargarse. Se reescalo (x0.3) y se
+                aplico una rotacion inicial de Math.PI/5 en X e Y.
+            </p>
+            <iframe class="container" src="prac2-9.html" title="Escena prac2-9"></iframe>
+
+            <h2>Respuestas concisas a cuestiones del guion</h2>
+            <p>
+                <strong>Por que el material de la atmosfera es MeshLambertMaterial y no MeshPhongMaterial:</strong>
+                las nubes no producen reflejos especulares de la luz solar; Lambert modela unicamente la
+                componente difusa, que es suficiente para las nubes.
+            </p>
+            <p>
+                <strong>Por que se usa un Object3D padre para Tierra y atmosfera:</strong> para aplicar
+                la inclinacion axial una sola vez al grupo, evitando mantener dos rotaciones sincronizadas
+                de forma independiente.
+            </p>
+            <p>
+                <strong>Que diferencia hay entre vertex shader y fragment shader:</strong> el vertex shader
+                procesa cada vertice de la geometria (posicion, UV escaladas) antes de la rasterizacion;
+                el fragment shader procesa cada fragmento (pixel) generado tras la rasterizacion, calculando
+                el color final mediante mezcla de texturas y efectos de niebla.
+            </p>
+            <p>
+                <strong>Por que se usa LoadingManager en prac2-9:</strong> porque ColladaLoader puede cargar
+                multiples recursos de forma asincrona; el LoadingManager dispara el callback solo cuando
+                TODOS los recursos han terminado, garantizando que el modelo este completo antes de aniadirlo.
+            </p>
+
+            <h2>Ejercicio adicional (prac2-10) — Sistema Solar completo animado</h2>
+            <p>
+                Escena integradora que combina todos los conceptos de la sesion: el Sol con
+                <span class="code">ShaderMaterial</span> en el origen, la Tierra orbitando alrededor
+                del Sol mediante un <span class="code">earthOrbitGroup</span>, la Luna orbitando la
+                Tierra y la ISS (COLLADA) orbitando la Tierra en una trayectoria inclinada.
+                Los periodos de orbita se ajustaron para que el movimiento fuese claramente visible
+                (Tierra: 60 s/vuelta, Luna: 15 s/vuelta, ISS: 3 s/vuelta).
+            </p>
+            <iframe class="container" src="prac2-10.html" title="Escena prac2-10"></iframe>
+
+            <h2>Dificultades encontradas y solucion</h2>
+            <p>
+                1) <strong>Textura negra en prac2-1</strong> (pantalla negra tras cargar): el path de la textura
+                era incorrecto (<span class="code">../textures/</span> en lugar de
+                <span class="code">textures/</span> relativo a la raiz del servidor). Se corrigio la ruta.
+            </p>
+            <p>
+                2) <strong>Intensidad insuficiente de la PointLight en prac2-2</strong>: con el decaimiento
+                por defecto la esfera aparecia casi negra. Se establacio
+                <span class="code">decay=0</span> para eliminar la atenuacion por distancia.
+            </p>
+            <p>
+                3) <strong>Nubes opacas en prac2-3</strong>: la atmosfera tapaba completamente la Tierra.
+                Se soluciono anadiendo <span class="code">transparent: true</span> al
+                <span class="code">MeshLambertMaterial</span> para que las zonas transparentes de la
+                textura dejen ver la superficie.
+            </p>
+            <p>
+                4) <strong>Shaders GLSL no reconocidos por webpack</strong>: al importar ficheros
+                <span class="code">.glsl</span> webpack lanzaba error. Se resolvio instalando
+                <span class="code">webpack-glsl-loader</span> y anadiendo la regla correspondiente
+                al objeto <span class="code">module.rules</span> de webpack.config.js.
+            </p>
+        </div>
+    </body>
+</html>
