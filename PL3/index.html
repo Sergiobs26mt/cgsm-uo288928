@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Memoria de practicas de CGSM - Practica 3</title>
+        <link rel="stylesheet" type="text/css" href="report.css">
+    </head>
+    <body>
+        <div id="head">
+            <table id="general">
+                <tr>
+                    <th class="header">Nombre:</th>
+                    <td>Sergio Botana Suárez</td>
+                </tr>
+                <tr>
+                    <th>Practica:</th>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <th>Fecha:</th>
+                    <td>07/04/2026</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="content">
+            <h1>Memoria</h1>
+
+            <h2>Descripcion de la practica</h2>
+            <p>
+                En esta sesion se trabajo con texturas avanzadas en three.js. Se implementaron mapas topologicos (bump maps)
+                para dar sensacion de volumen a las superficies, texturas de video mediante un canvas intermedio,
+                controles interactivos de la escena con lil-gui y una escena de primera persona con desplazamiento de camara
+                mediante FirstPersonControls.
+            </p>
+
+            <h2>Tareas realizadas y resultados</h2>
+            <p>
+                Se desarrollaron cuatro escenas (prac3-1 a prac3-4). En la primera se compararon dos cubos ladrillo,
+                uno con textura basica y otro con mapa topologico. En la segunda se aplico un video como textura a un plano
+                usando un canvas intermedio actualizado en cada frame. En la tercera se añadio un control interactivo lil-gui
+                para modificar el parametro bumpScale en tiempo real. En la cuarta se construyo una escena 3D explorable
+                con una rejilla de suelo, cubos con materiales multiples y controles de camara en primera persona.
+            </p>
+
+            <h2>Ejercicio 1 (prac3-1): Texturas avanzadas — mapa topologico</h2>
+            <p>
+                Se modifico la escena base para mostrar dos cubos lado a lado: el izquierdo con textura de ladrillo simple
+                (<span class="code">MeshPhongMaterial</span> con <span class="code">map</span>) y el derecho con textura mas
+                mapa topologico (<span class="code">bumpMap</span>, <span class="code">bumpScale: 10</span>). Ambos giran
+                continuamente sobre el eje Y mediante <span class="code">requestAnimationFrame</span>.
+                El uso de <span class="code">MeshPhongMaterial</span> en lugar de <span class="code">MeshBasicMaterial</span>
+                fue necesario para que el bump map reaccionase a la iluminacion y el efecto de relieve fuese visible.
+            </p>
+            <iframe class="container" src="prac3-1.html" title="Escena prac3-1"></iframe>
+
+            <h2>Ejercicio 2 (prac3-2): Textura de video</h2>
+            <p>
+                Se creo un plano que utiliza como textura el trailer de Sintel. Para respetar la restriccion de los
+                navegadores modernos sobre reproduccion automatica de audio/video, se añadio una capa overlay que exige
+                una interaccion del usuario (boton "Iniciar") antes de construir la escena y llamar a
+                <span class="code">video.play()</span>. El frame actual del video se copia en cada iteracion del ciclo
+                de renderizado al canvas intermedio mediante <span class="code">drawImage(video, 0, 0, w, h)</span>
+                y se marca la textura como <span class="code">needsUpdate = true</span>. El plano rota sobre el eje Y.
+                Se añadio un control <span class="code">Pause</span> con lil-gui para detener la rotacion.
+            </p>
+            <p>
+                <strong>Dificultad:</strong> inicialmente el video no se veia completo: se mostraba recortado con una
+                banda negra superior. La causa era que <span class="code">drawImage(video, 0, 0)</span> dibuja el frame
+                en su resolucion nativa (854x480), pero el canvas es de 480x204, por lo que el contenido se recortaba.
+                La solucion fue añadir los parametros de ancho y alto al llamar a drawImage:
+                <span class="code">drawImage(video, 0, 0, image.width, image.height)</span>.
+            </p>
+            <iframe class="container" src="prac3-2.html" title="Escena prac3-2"></iframe>
+
+            <h2>Ejercicio 2 Opcional (prac3-2-opt): Video reproducido al revés</h2>
+            <p>
+                Como ejercicio opcional se implemento la reproduccion inversa del mismo video. La API HTML5 no soporta
+                <span class="code">playbackRate</span> negativo en los navegadores actuales, por lo que se uso una tecnica
+                de <em>cadena de seeks</em>: al completarse cada seek (<span class="code">seeked</span> event),
+                se dibuja el frame en el canvas y se lanza inmediatamente el siguiente seek con
+                <span class="code">currentTime -= 1/30</span>. De esta forma los frames se encadenan a la velocidad
+                maxima que el navegador puede resolver cada seek. El bucle <span class="code">requestAnimationFrame</span>
+                solo se usa para la rotacion del plano y el render, sin interferir con el timing del video.
+                Al llegar a <span class="code">currentTime = 0</span> se salta al final para hacer loop.
+            </p>
+            <iframe class="container" src="prac3-2-opt.html" title="Escena prac3-2-opt"></iframe>
+
+            <h2>Ejercicio 3 (prac3-3): Control interactivo de bumpScale</h2>
+            <p>
+                Partiendo de prac3-1, se añadio un panel de control lil-gui con un slider para modificar el parametro
+                <span class="code">bumpScale</span> del material (rango -4 a 4, paso 0.1). El valor del control se
+                aplica al material en cada frame dentro de la funcion de animacion:
+                <span class="code">material.bumpScale = controlData.bumpScale</span>.
+                Se verifico que sin esta linea el slider no tenia efecto visible en la escena.
+            </p>
+            <iframe class="container" src="prac3-3.html" title="Escena prac3-3"></iframe>
+
+            <h2>Ejercicio 4 (prac3-4): Escena de primera persona</h2>
+            <p>
+                Se creo una escena con una rejilla (<span class="code">GridHelper 800x40</span>) a modo de suelo,
+                dos cubos de 50 unidades con materiales multiples (una cara especial enfrentada y el resto con ladrillo),
+                luz direccional y luz hemisferica para iluminacion natural. Se importo
+                <span class="code">FirstPersonControls</span> de three.js y se configuro con velocidades de movimiento
+                y vision. En el ciclo de renderizado se obtiene el delta de tiempo con
+                <span class="code">THREE.Clock</span> y se llama a <span class="code">controls.update(delta)</span>.
+                El usuario puede desplazarse con W/S/A/D y mover la vista con el raton.
+            </p>
+            <iframe class="container" src="prac3-4.html" title="Escena prac3-4"></iframe>
+
+            <h2>Respuestas a cuestiones del guion</h2>
+            <p>
+                <strong>¿Por que es necesario usar MeshPhongMaterial con el bump map?</strong>
+                Porque el bump map usa la iluminacion para simular relieve. Con MeshBasicMaterial no hay calculo de
+                luz y el efecto no se aprecia. Solo los materiales que calculan iluminacion (Phong, Lambert, Standard)
+                pueden mostrar el efecto del bump map.
+            </p>
+            <p>
+                <strong>¿Que efecto tiene bumpScale sobre la textura?</strong>
+                Es un factor de escala que amplifica o reduce el desplazamiento percibido de la superficie segun el
+                mapa topologico. Valores altos exageran el relieve; valores negativos invierten el efecto (valles
+                donde habia picos). Con valor 0 el bump map no tiene efecto.
+            </p>
+            <p>
+                <strong>¿Por que se necesita un canvas intermedio para la textura de video?</strong>
+                Three.js no puede usar directamente el elemento video como textura en tiempo real de forma eficiente.
+                El canvas actua de intermediario: en cada frame se copia el frame del video al canvas y se señala
+                la textura como <span class="code">needsUpdate = true</span> para que el renderer la suba a GPU.
+            </p>
+            <p>
+                <strong>¿Por que es necesario el boton de interaccion en la escena de video?</strong>
+                Los navegadores modernos bloquean la reproduccion automatica de medios con audio para evitar
+                experiencias intrusivas al usuario. Exigen que la reproduccion se inicie como respuesta directa
+                a un gesto del usuario (click, teclado, etc.).
+            </p>
+
+            <h2>Dificultades encontradas y solucion</h2>
+            <p>
+                1) <strong>Recarga automatica de la pagina</strong>: el servidor de desarrollo de Webpack tenia activo
+                el Live Reload, lo que provocaba recargas de pagina al detectar cambios en ficheros. Se resolvio
+                añadiendo <span class="code">liveReload: false</span> y <span class="code">hot: false</span> al
+                bloque <span class="code">devServer</span> de <span class="code">webpack.config.js</span>.
+            </p>
+            <p>
+                2) <strong>Video recortado en la textura</strong>: <span class="code">drawImage(video, 0, 0)</span>
+                dibujaba el frame en su resolucion nativa, superior al canvas de 480x204, recortando el contenido.
+                Se corrigio pasando las dimensiones del canvas como parametros de destino a drawImage.
+            </p>
+            <p>
+                3) <strong>Control GUI sin efecto en la escena</strong>: el slider de bumpScale modificaba el valor
+                del objeto controlData pero no el material. Fue necesario añadir
+                <span class="code">material.bumpScale = controlData.bumpScale</span> dentro del bucle de animacion
+                para que el cambio se propagase al renderizador en cada frame.
+            </p>
+        </div>
+    </body>
+</html>

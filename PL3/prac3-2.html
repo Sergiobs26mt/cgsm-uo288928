@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGSM - Prac 3-2: Video Texture</title>
+    <link rel="stylesheet" type="text/css" href="prac1-1.css">
+    <link rel="stylesheet" type="text/css" href="prac3-2.css">
+</head>
+
+<body>
+    <!-- Elemento de vídeo oculto - el navegador lo procesa sin mostrarlo -->
+    <video id="video" style="display:none" loop>
+        <source src="../videos/sintel_trailer-480p.mp4">
+        <source src="../videos/sintel_trailer-480p.ogv">
+    </video>
+
+    <!-- Overlay: requiere interacción del usuario antes de reproducir el vídeo -->
+    <div id="overlay">
+        <div id="overlay-box">
+            <h2>Textura de vídeo</h2>
+            <p>Haz clic para iniciar la escena.</p>
+            <button id="playBtn">▶ Iniciar</button>
+        </div>
+    </div>
+
+    <script type="module" defer src="dist/prac3-2.js"></script>
+</body>
+
+</html>
