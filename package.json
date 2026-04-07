@@ -1,0 +1,23 @@
+{
+  "name": "cgsm-uo288928",
+  "version": "1.0.0",
+  "description": "CGSM practicas - workspace raiz",
+  "private": true,
+  "workspaces": [
+    "PL1",
+    "PL2",
+    "PL3",
+    "PL7"
+  ],
+  "scripts": {
+    "pl1": "npm start --workspace=PL1",
+    "pl2": "npm start --workspace=PL2",
+    "pl3": "npm start --workspace=PL3",
+    "pl7": "npm start --workspace=PL7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sergiobs26mt/cgsm-uo288928.git"
+  },
+  "license": "ISC"
+}
