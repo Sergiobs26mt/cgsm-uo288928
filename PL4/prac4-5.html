@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGSM PL4 - Video Screen Control</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #101318;
+            color: #f0f0f0;
+            font-family: "Trebuchet MS", sans-serif;
+        }
+
+        #help {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+            max-width: 460px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(0, 0, 0, 0.45);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+    </style>
+</head>
+<body>
+    <div id="help">
+        Move: WASD or arrow keys. Look: mouse.<br>
+        Hover a box to select it (check console). Press SPACE on Cube A to start the screen, Cube B to pause it.<br>
+        Collision detection enabled: camera cannot pass through cubes.
+    </div>
+
+    <video id="screenVideo" style="display:none" preload="auto" loop playsinline crossorigin="anonymous">
+        <source src="../PL3/videos/sintel_trailer-480p.mp4" type="video/mp4">
+        <source src="../PL3/videos/sintel_trailer-480p.ogv" type="video/ogg">
+    </video>
+
+    <script type="module" defer src="dist/prac4-5.js"></script>
+</body>
+</html>

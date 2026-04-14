@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Memoria de practicas de CGSM - Practica 4</title>
+        <link rel="stylesheet" type="text/css" href="report.css">
+    </head>
+    <body>
+        <div id="head">
+            <table id="general">
+                <tr>
+                    <th class="header">Nombre:</th>
+                    <td>Sergio Botana Suárez</td>
+                </tr>
+                <tr>
+                    <th>Practica:</th>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <th>Fecha:</th>
+                    <td>14/04/2026</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="content">
+            <h1>Memoria</h1>
+
+            <h2>Resumen de la sesion</h2>
+            <p>
+                En esta sesion se implementaron cuatro escenas principales de la Practica 4 de sonido 3D con three.js: audio posicional,
+                seleccion de objetos, interaccion sobre objetos seleccionados y deteccion de colisiones en primera persona.
+                Como extension adicional, se creo una quinta escena con una pantalla de video controlada por los cubos.
+            </p>
+
+            <h2>Tareas realizadas y resultados</h2>
+            <ol>
+                <li>Prac4-1: dos cubos con sonido posicional independiente y activacion por tecla espacio sobre el cubo apuntado.</li>
+                <li>Prac4-2: seleccion con Raycaster, guardando el objeto intersectado y mostrando su nombre por consola.</li>
+                <li>Prac4-3: interaccion sobre el cubo seleccionado para reproducir/pausar sonido y cambiar textura del boton.</li>
+                <li>Prac4-4: colisiones con 8 rayos en plano XZ para impedir atravesar cubos en FirstPersonControls.</li>
+                <li>Prac4-5 (extra): pantalla 2D con VideoTexture, Cube A reproduce y Cube B pausa.</li>
+            </ol>
+
+            <h2>Dificultades y solucion</h2>
+            <ol>
+                <li>
+                    Autoplay bloqueado en audio/video por navegador.
+                    Solucion: reanudar contexto de audio en el gesto de usuario con <span class="code">listener.context.resume()</span>
+                    y reproducir video solo tras pulsar espacio sobre el cubo.
+                </li>
+                <li>
+                    Orientacion distinta de la cara boton en cada cubo.
+                    Solucion: mapear indices por nombre (<span class="code">Cube A = 4</span>, <span class="code">Cube B = 5</span>)
+                    para conmutar el material correcto.
+                </li>
+                <li>
+                    Error de watchers en servidor de desarrollo (<span class="code">EMFILE</span>).
+                    Solucion: en webpack, servir la ruta estatica adicional con <span class="code">watch: false</span>.
+                </li>
+                <li>
+                    Regresion al mezclar colisiones y pantalla de video.
+                    Solucion: separar implementaciones en <span class="code">prac4-4</span> (guion oficial)
+                    y <span class="code">prac4-5</span> (extension).
+                </li>
+            </ol>
+
+            <h2>Escena 1 - Audio posicional (prac4-1)</h2>
+            <p>
+                Resultado: cada cubo emite su sonido con atenuacion espacial segun distancia y orientacion de la camara.
+            </p>
+            <iframe class="container" src="prac4-1.html" title="Escena prac4-1"></iframe>
+
+            <h2>Escena 2 - Seleccion con Raycaster (prac4-2)</h2>
+            <p>
+                Resultado: el raycaster detecta el cubo bajo el puntero, actualiza cursor y registra el objeto seleccionado.
+            </p>
+            <iframe class="container" src="prac4-2.html" title="Escena prac4-2"></iframe>
+
+            <h2>Escena 3 - Interaccion y feedback visual (prac4-3)</h2>
+            <p>
+                Resultado: sobre el cubo seleccionado, la barra espaciadora alterna sonido y estado visual del boton.
+            </p>
+            <iframe class="container" src="prac4-3.html" title="Escena prac4-3"></iframe>
+
+            <h2>Escena 4 - Colisiones (prac4-4)</h2>
+            <p>
+                Resultado: el usuario no puede atravesar cubos; si hay impacto cercano, se revierte el avance del frame.
+            </p>
+            <iframe class="container" src="prac4-4.html" title="Escena prac4-4"></iframe>
+
+            <h2>Escena adicional - Video en pantalla (prac4-5)</h2>
+            <p>
+                Resultado: se controla reproduccion/pausa de un video mediante seleccion de cubos, manteniendo colisiones.
+                Esta escena es una extension y no sustituye la entrega principal de prac4-4.
+            </p>
+            <iframe class="container" src="prac4-5.html" title="Escena prac4-5"></iframe>
+
+            <h2>Respuestas concisas a cuestiones del guion</h2>
+            <p>
+                <strong>Como se implementa el sonido 3D?</strong>
+                Con <span class="code">PositionalAudio</span> unido a cada malla y parametros
+                <span class="code">setRefDistance</span> y <span class="code">setRolloffFactor</span> para atenuacion espacial.
+            </p>
+            <p>
+                <strong>Como se seleccionan los objetos?</strong>
+                Se convierten coordenadas de raton a NDC, se llama a
+                <span class="code">raycaster.setFromCamera(mouse, camera)</span>
+                y se toma la primera interseccion con los objetos seleccionables.
+            </p>
+            <p>
+                <strong>Como se refleja visualmente la interaccion?</strong>
+                Cambiando el material de la cara boton entre textura apagada y activada
+                y marcando <span class="code">material.needsUpdate = true</span>.
+            </p>
+            <p>
+                <strong>Como se evita atravesar obstaculos?</strong>
+                Con 8 rayos alrededor de la direccion de camara en XZ.
+                Si una interseccion esta a distancia menor que el umbral, se aplica
+                <span class="code">controls.update(-delta)</span> para deshacer el movimiento.
+            </p>
+
+            <h2>Capturas de pantalla</h2>
+            <p class="note">
+                No se añadieron capturas estaticas extra.
+                Las escenas quedan embebidas en esta memoria y pueden evaluarse directamente en cada iframe.
+            </p>
+        </div>
+    </body>
+</html>
