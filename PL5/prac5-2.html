@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGSM - Prac 5-2: Video Texture con MPEG-DASH</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="prac5-2.css">
+</head>
+
+<body>
+    <video id="video" style="display:none" crossorigin="anonymous"></video>
+
+    <div id="overlay">
+        <div id="overlay-box">
+            <h2>Textura de vídeo DASH</h2>
+            <p>
+                Haz clic para iniciar la escena.<br>
+                MPD por defecto: <code>http://localhost:60080/EJERCICIO/sintel.mpd</code>
+            </p>
+            <button id="playBtn">▶ Iniciar</button>
+        </div>
+    </div>
+
+    <script defer src="lib/dash.all.min.js"></script>
+    <script type="module" defer src="dist/prac5-2.js"></script>
+</body>
+
+</html>

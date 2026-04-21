@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Memoria de prácticas de CGSM - Práctica 5</title>
+        <link rel="stylesheet" type="text/css" href="report.css">
+    </head>
+    <body>
+        <div id="head">
+            <table id="general">
+                <tr>
+                    <th class="header">Nombre:</th>
+                    <td>Sergio Botana Suárez</td>
+                </tr>
+                <tr>
+                    <th>Práctica:</th>
+                    <td>5 - Distribución de medios continuos</td>
+                </tr>
+                <tr>
+                    <th>Fecha:</th>
+                    <td>21/04/2026</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="content">
+            <h1>Memoria</h1>
+
+            <h2>Resumen de tareas realizadas y resultados</h2>
+            <p>
+                Durante la sesión se trabajó con distribución de vídeo mediante MPEG-DASH y con la integración de
+                <span class="code">dash.js</span> en páginas web propias.
+            </p>
+            <ul>
+                <li>
+                    Se revisó el funcionamiento de DASH (manifiesto MPD, <span class="code">AdaptationSet</span>,
+                    <span class="code">Representation</span> y segmentación).
+                </li>
+                <li>
+                    Se sirvió contenido DASH desde servidor HTTP con CORS activo y se probó reproducción adaptativa.
+                </li>
+                <li>
+                    Se integró un reproductor DASH básico en <span class="code">prac5-1.html</span>.
+                </li>
+                <li>
+                    Se adaptó la escena de textura de vídeo para usar un flujo DASH como fuente de textura en
+                    <span class="code">prac5-2.html</span>.
+                </li>
+            </ul>
+            <p>
+                Resultado final: ambas escenas se reproducen correctamente, permitiendo conmutación adaptativa de calidad
+                en función de la red y uso del vídeo DASH dentro de una escena 3D de Three.js.
+            </p>
+
+            <h2>Escena 1 (prac5-1): Reproductor DASH con dash.js</h2>
+            <p>
+                Se creó una página con un elemento <span class="code">video#player</span> y se inicializó dash.js con:
+                <span class="code">player.initialize(document.querySelector('#player'), url, true)</span>.
+                El manifiesto se toma por defecto de
+                <span class="code">http://localhost:60080/EJERCICIO/sintel.mpd</span>, y puede sobrescribirse con
+                <span class="code">?mpd=...</span>.
+            </p>
+            <iframe class="container" src="prac5-1.html" title="Escena prac5-1"></iframe>
+
+            <h2>Escena 2 (prac5-2): Textura de vídeo a partir de MPEG-DASH</h2>
+            <p>
+                Se partió de la práctica de textura de vídeo y se sustituyó la fuente local por un vídeo DASH.
+                Tras la interacción del usuario (botón <em>Iniciar</em>), dash.js comienza la reproducción y cada frame
+                del vídeo se copia a un canvas intermedio para actualizar la textura del plano en Three.js.
+                Además, se mantuvo el control de pausa de la rotación con GUI.
+            </p>
+            <iframe class="container" src="prac5-2.html" title="Escena prac5-2"></iframe>
+
+            <h2>Ejercicio 3.4: Preparación del vídeo Sintel (Multiresolución)</h2>
+            <p>
+                Para servir el vídeo de <em>Sintel</em> mediante MPEG-DASH con tres calidades diferentes (480p, 720p y 1080p)
+                junto con una pista de audio unificada, fue necesario demultiplexar y recodificar los flujos originales
+                utilizando <strong>ffmpeg</strong>, para finalmente empaquetarlos con <strong>MP4Box</strong>.
+            </p>
+            <p>El proceso y los comandos ejecutados en la máquina virtual fueron los siguientes:</p>
+            <ol>
+                <li>
+                    <strong>Extracción de la pista de audio (tomada de la versión 480p):</strong>
+                    <pre style="background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto;">ffmpeg -i sintel_trailer-480p.mp4 -vn -acodec copy audio.mp4</pre>
+                </li>
+                <li>
+                    <strong>Extracción y recodificación de las pistas de vídeo (perfil H.264, 24fps, un I-frame por segundo):</strong>
+                    <pre style="background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto;">ffmpeg -i sintel_trailer-480p.mp4 -an -c:v libx264 -r 24 -g 24 video_480.mp4
+ffmpeg -i sintel_trailer-720p.mp4 -an -c:v libx264 -r 24 -g 24 video_720.mp4
+ffmpeg -i sintel_trailer-1080p.mp4 -an -c:v libx264 -r 24 -g 24 video_1080.mp4</pre>
+                </li>
+                <li>
+                    <strong>Generación del manifiesto DASH:</strong>
+                    <pre style="background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto;">MP4Box -dash 5000 -profile onDemand -out sintel.mpd audio.mp4 video_480.mp4 video_720.mp4 video_1080.mp4</pre>
+                </li>
+            </ol>
+            <p>
+                Al mantener el audio y el vídeo en <em>AdaptationSets</em> separados, se garantizó que el reproductor web 
+                pudiera conmutar dinámicamente entre las distintas resoluciones de vídeo sin que el sonido sufriera 
+                interrupciones, cumpliendo con los requisitos de las extensiones MSE (Media Source Extensions) de los navegadores.
+            </p>
+
+            <h2>Respuestas concisas a cuestiones del guion</h2>
+            <p>
+                <strong>¿Cuántas codificaciones de audio y vídeo se ofrecen en el manifiesto final usado?</strong>
+                Se ofrece una pista de audio y tres representaciones de vídeo.
+            </p>
+            <p>
+                <strong>¿Qué resoluciones de vídeo se usan?</strong>
+                480p, 720p y 1080p.
+            </p>
+            <p>
+                <strong>¿Qué se observó al reproducir con Auto Switch activado?</strong>
+                El reproductor selecciona automáticamente la representación más alta posible según el ancho de banda y,
+                al degradar la red, reduce bitrate para evitar cortes.
+            </p>
+            <p>
+                <strong>¿Por qué fue necesario activar CORS en el servidor?</strong>
+                Porque el reproductor web realiza peticiones a un origen diferente y sin CORS el navegador bloquea la carga
+                del MPD y de los segmentos.
+            </p>
+            <p>
+                <strong>¿Por qué se usa interacción del usuario antes de reproducir?</strong>
+                Para cumplir la política de autoplay del navegador y evitar bloqueo de reproducción automática con audio.
+            </p>
+
+            <h2>Dificultades surgidas y solución aplicada</h2>
+            <p>
+                <strong>1) Error de reproducción por contenido mixto (HTTPS/HTTP):</strong>
+                si el cliente de referencia se abría en HTTPS y el MPD estaba en HTTP, el navegador bloqueaba la carga.
+                <strong>Solución:</strong> abrir el reproductor en HTTP o servir también el manifiesto por HTTPS.
+            </p>
+            <p>
+                <strong>2) Problemas de compatibilidad de códecs/navegador:</strong>
+                algunos navegadores no reproducían ciertos ficheros directamente.
+                <strong>Solución:</strong> separar pistas audio/vídeo y recodificar vídeo a H.264 perfil baseline cuando fue
+                necesario antes de regenerar el MPD (tal y como se resolvió en el ejercicio 3.4).
+            </p>
+            <p>
+                <strong>3) Error de entorno local con npm/workspaces:</strong>
+                inicialmente el entorno no encontraba <span class="code">npm</span> y faltaba
+                <span class="code">PL5</span> en la lista de <span class="code">workspaces</span> del proyecto raíz.
+                <strong>Solución:</strong> instalación de Node.js LTS, refresco del PATH y corrección del
+                <span class="code">package.json</span> raíz.
+            </p>
+
+            <h2>Capturas de pantalla significativas</h2>
+            <p>
+                Se incluyen a continuación las dos capturas principales de los ejercicios para facilitar la revisión
+                sin necesidad de levantar servidor.
+            </p>
+            <figure>
+                <img src="capturas/captura_ejercicio_5_1.png" alt="Captura del ejercicio 5-1 (reproductor DASH)" style="max-width: 100%; border: 1px solid #bbb; margin-bottom: 0.6rem;">
+                <figcaption><strong>Figura 1.</strong> Ejercicio 5-1: Reproductor DASH con dash.js.</figcaption>
+            </figure>
+            <figure>
+                <img src="capturas/captura_ejercicio_5_2.png" alt="Captura del ejercicio 5-2 (textura de vídeo DASH en Three.js)" style="max-width: 100%; border: 1px solid #bbb; margin-bottom: 0.6rem;">
+                <figcaption><strong>Figura 2.</strong> Ejercicio 5-2: Textura de vídeo servida mediante MPEG-DASH.</figcaption>
+            </figure>
+
+            <h2>Entrega</h2>
+            <p>
+                La memoria queda compuesta por archivos HTML, JS y recursos dentro de <span class="code">PL5</span>,
+                y se ha generado un fichero ZIP con el contenido para su subida a la tarea correspondiente.
+            </p>
+        </div>
+    </body>
+</html>

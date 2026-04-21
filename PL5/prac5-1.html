@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGSM - Prac 5-1: dash.js player</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #0b1020;
+            color: #e5e7eb;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        main {
+            width: min(960px, 95vw);
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            margin: 0 0 1rem;
+        }
+
+        p {
+            color: #b7bfd1;
+            margin-top: 0;
+        }
+
+        video {
+            width: 100%;
+            max-height: 70vh;
+            background: #000;
+            border-radius: 10px;
+            border: 1px solid #374151;
+        }
+
+        code {
+            background: #111827;
+            padding: 0.15rem 0.35rem;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Práctica 5-1 · Reproductor MPEG-DASH con dash.js</h1>
+        <p>
+            URL por defecto del manifiesto: <code>http://localhost:60080/EJERCICIO/sintel.mpd</code>
+            (puedes sobreescribirla con <code>?mpd=...</code> en la URL).
+        </p>
+        <video id="player" controls></video>
+    </main>
+
+    <script defer src="lib/dash.all.min.js"></script>
+    <script defer src="dist/prac5-1.js"></script>
+</body>
+
+</html>

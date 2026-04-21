@@ -1,0 +1,23 @@
+{
+  "name": "pl5",
+  "version": "1.0.0",
+  "description": "Practica 5 - Distribucion de medios continuos con MPEG-DASH",
+  "main": "index.js",
+  "scripts": {
+    "watch": "webpack --watch",
+    "start": "webpack serve",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "webpack": "^5.105.4",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.3"
+  }
+}
