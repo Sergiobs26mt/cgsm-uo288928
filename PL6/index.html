@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Memoria de practicas de CGSM - Practica 6</title>
+        <link rel="stylesheet" type="text/css" href="report.css">
+        <style>
+            .container { width: 100%; height: 500px; border: 1px solid #ccc; margin-bottom: 20px; }
+            .code { font-family: monospace; background: #eee; padding: 2px 4px; border-radius: 3px; }
+        </style>
+    </head>
+    <body>
+        <div id="head">
+            <table id="general">
+                <tr>
+                    <th class="header">Nombre:</th>
+                    <td>Sergio Botana Suárez</td>
+                </tr>
+                <tr>
+                    <th>Practica:</th>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <th>Fecha:</th>
+                    <td>29/04/2026</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="content">
+            <h1>Memoria Práctica 6 - WebRTC</h1>
+
+            <h2>Descripcion de la practica</h2>
+            <p>
+                En esta sesión se trabajó con WebRTC para la captura y comunicación de medios en tiempo real a través del navegador. Se implementaron ejercicios de acceso a cámara web, captura de imágenes hacia un canvas, establecimiento de conexiones (<span class="code">RTCPeerConnection</span>) en la misma página y, finalmente, la integración de WebRTC con WebGL usando Three.js para mapear la cámara como una textura de vídeo en un objeto 3D.
+            </p>
+
+            <h2>Tareas realizadas y resultados</h2>
+            
+            <h2>Ejercicio 1 (prac6-1): Captura básica de cámara</h2>
+            <p>
+                Se ha utilizado <span class="code">navigator.mediaDevices.getUserMedia</span> para solicitar acceso a la cámara y vincular el flujo resultante al atributo <span class="code">srcObject</span> de un elemento de vídeo HTML.
+            </p>
+            <iframe class="container" src="prac6-1.html" title="Escena prac6-1" allow="camera; microphone"></iframe>
+
+            <h2>Ejercicio 2 (prac6-2): Captura de fotos</h2>
+            <p>
+                A partir de la cámara activa, se ha introducido un elemento <span class="code">&lt;canvas&gt;</span> oculto que copia el frame actual cuando se hace click en el botón de capturar. Se utilizó <span class="code">drawImage()</span> del contexto 2D y se descargó el resultado transformándolo a Base64 con <span class="code">toDataURL()</span>.
+            </p>
+            <iframe class="container" src="prac6-2.html" title="Escena prac6-2" allow="camera; microphone"></iframe>
+
+            <h2>Ejercicio 3 (prac6-3): RTCPeerConnection Local</h2>
+            <p>
+                Se simuló una comunicación completa WebRTC en el mismo navegador creando una instancia local y otra remota de <span class="code">RTCPeerConnection</span>. Se implementó el intercambio de candidatos ICE y descripciones (oferta/respuesta) mediante variables locales, finalizando con la reproducción del flujo remoto en un segundo elemento <span class="code">&lt;video&gt;</span>.
+            </p>
+            <iframe class="container" src="prac6-3.html" title="Escena prac6-3" allow="camera; microphone"></iframe>
+
+            <h2>Ejercicio 4 (prac6-4): Integración con WebGL</h2>
+            <p>
+                Se modificó la escena WebGL (prac3-2) donde se proyectaba un vídeo sobre un plano rotatorio. Se sustituyó el archivo de vídeo local por el flujo de WebRTC (<span class="code">getUserMedia</span>). En cada frame del ciclo de animacion de Three.js, el contenido de la cámara se dibuja en el canvas intermedio para actualizar la textura del material y lograr una proyeccion en vivo en 3D.
+            </p>
+            <iframe class="container" src="prac6-4.html" title="Escena prac6-4" allow="camera; microphone"></iframe>
+
+            <h2>Respuestas a cuestiones del guion</h2>
+            <p>
+                Al ser WebRTC una tecnología fuertemente integrada con HTML5, usar flujos de video es equivalente a usar archivos estáticos de vídeo, permitiendo una gran flexibilidad e integración transparente con herramientas complejas como WebGL (Three.js) e incluso transformaciones en canvas mediante JavaScript.
+            </p>
+
+            <h2>Dificultades encontradas y solucion</h2>
+            <p>
+                1) <strong>Gestión de Permisos en Iframe:</strong> Para los iframes incrustados en esta memoria de reporte fue necesario incluir el atributo <span class="code">allow="camera; microphone"</span> para evitar que la directiva de seguridad estricta del navegador bloqueara el uso de WebRTC dentro de un marco embebido.
+            </p>
+            <p>
+                2) <strong>Integración con Three.js:</strong> Al añadir el soporte para el ejercicio 4 en este proyecto aislado (Workspace PL6), hubo que añadir explícitamente el paquete <span class="code">three</span> como dependencia en el <span class="code">package.json</span> de PL6 para que Webpack pudiese resolver las importaciones del core de WebGL.
+            </p>
+            <p>
+                3) <strong>Disponibilidad de cámara:</strong> Si la cámara está en uso por varias instancias simultáneamente (por ejemplo en varias pestañas), puede causar problemas de hardware virtual o cuelgues. Se solucionó asegurando que las pestañas antiguas se cerraran o que la interfaz pidiera los permisos enlazados al click, aunque para esta memoria los iframes lo piden al cargar la misma página, lo cual soporta la cámara multiproceso nativa.
+            </p>
+        </div>
+    </body>
+</html>

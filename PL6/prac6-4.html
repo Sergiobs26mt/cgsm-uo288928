@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGSM - Prac 6-4: WebRTC Texture</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #ffffff; }
+    </style>
+</head>
+
+<body>
+    <!-- Elemento de vídeo oculto - el navegador lo procesa sin mostrarlo -->
+    <video id="video" style="position: absolute; width: 0; height: 0; visibility: hidden;" autoplay playsinline muted></video>
+
+    <!-- Overlay: No requiere interacción del usuario si el vídeo está muted, 
+         pero mantenemos el estilo para consistencia con prac3-2. 
+         Lo ocultaremos automáticamente al obtener el stream. -->
+    <div id="overlay" style="position:absolute; width:100%; height:100%; display:flex; justify-content:center; align-items:center; background:rgba(0,0,0,0.8); color:white; z-index:10;">
+        <div id="overlay-box" style="text-align:center;">
+            <h2>Textura WebRTC</h2>
+            <p>Esperando acceso a la cámara...</p>
+        </div>
+    </div>
+
+    <script src="prac6-4.js"></script>
+</body>
+
+</html>

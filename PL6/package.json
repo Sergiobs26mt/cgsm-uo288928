@@ -1,0 +1,21 @@
+{
+  "name": "cgsm-uo288928-pl6",
+  "version": "1.0.0",
+  "description": "PL6",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "start": "webpack serve",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "three": "^0.183.2",
+    "webrtc-adapter": "^9.0.1"
+  },
+  "devDependencies": {
+    "webpack": "^5.105.4",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.3"
+  }
+}

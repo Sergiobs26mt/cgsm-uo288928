@@ -9,6 +9,7 @@
     "PL3",
     "PL4",
     "PL5",
+    "PL6",
     "PL7"
   ],
   "scripts": {
@@ -17,6 +18,7 @@
     "pl3": "npm start --workspace=PL3",
     "pl4": "npm start --workspace=PL4",
     "pl5": "npm start --workspace=PL5",
+    "pl6": "npm start --workspace=PL6",
     "pl7": "npm start --workspace=PL7"
   },
   "repository": {
